@@ -90,9 +90,15 @@ public class GameSurface extends SurfaceView {
 
         root.onDraw(canvas);
         canvas.drawColor(Color.DKGRAY); // Use your preferred color
-        for (GameObject gameObject : gameObjects) {
-            gameObject.onDraw(canvas);
+        synchronized (gameObjects) { // Ensure thread-safe access
+            for (GameObject gameObject : new ArrayList<>(gameObjects)) {
+                gameObject.onDraw(canvas);
+            }
         }
+    }
+
+    public void clearGameObjects() {
+        gameObjects.clear();
     }
 
     @Override
@@ -103,15 +109,23 @@ public class GameSurface extends SurfaceView {
         return true;
     }
 
+    public ArrayList<GameObject> getGameObjects() {
+        return gameObjects;
+    }
+
+
     class FixedUpdateTimer extends TimerTask {
         @Override
         public void run() {
-            for (GameObject gameObject : gameObjects) {
-                gameObject.onFixedUpdate();
+            synchronized (gameObjects) { // Ensure thread-safe access
+                for (GameObject gameObject : new ArrayList<>(gameObjects)) {
+                    gameObject.onFixedUpdate();
+                }
             }
 
             root.onFixedUpdate();
-            invalidate();
+            postInvalidate(); // Use postInvalidate to update the UI thread safely
         }
     }
+
 }
