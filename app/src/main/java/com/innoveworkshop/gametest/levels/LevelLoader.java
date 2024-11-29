@@ -1,4 +1,4 @@
-package com.innoveworkshop.gametest.manager;
+package com.innoveworkshop.gametest.levels;
 
 import java.io.BufferedReader;
 import java.io.IOException;
