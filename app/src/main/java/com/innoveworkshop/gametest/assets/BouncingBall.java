@@ -94,8 +94,4 @@ public class BouncingBall extends Circle {
     public void setPosition(Vector vector) {
         position = vector;
     }
-
-    public Paddle getPaddle() {
-        return paddle;
-    }
 }

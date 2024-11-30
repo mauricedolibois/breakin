@@ -2,6 +2,7 @@ package com.innoveworkshop.gametest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Random;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -98,17 +99,49 @@ public class MainActivity extends AppCompatActivity {
             for (GameObject powerup : powerups) {
                 DroppingPowerup droppingPowerup = (DroppingPowerup) powerup;
                 if (droppingPowerup.isCollected()) { // Assuming isCollected() checks if collected
-                    addOneBall(
-                            droppingPowerup.getPosition().x,
-                            droppingPowerup.getPosition().y - 20,
-                            20,
-                            Color.WHITE,
-                            levelManager.getBalls().get(0).getSpeed()
-                    );
+//                    addOneBall(
+//                            droppingPowerup.getPosition().x,
+//                            droppingPowerup.getPosition().y - 20,
+//                            20,
+//                            Color.WHITE,
+//                            levelManager.getBalls().get(0).getSpeed()
+//                    );
+                    spawnBallsAtEachExistingBall();
                     gameSurface.removeGameObject(droppingPowerup);
                 }
             }
         }
+
+        private void spawnBallsAtEachExistingBall() {
+            List<BouncingBall> existingBalls = levelManager.getBalls();
+            Random random = new Random();
+
+            // Collect existing balls into a temporary list to avoid modifying the list while iterating
+            List<BouncingBall> ballsToSpawnAt = new ArrayList<>(existingBalls);
+
+            for (BouncingBall ball : ballsToSpawnAt) {
+                float x = ball.getPosition().x; // Assuming these getter methods exist
+                float y = ball.getPosition().y;
+                float radius = ball.radius;
+                int color = Color.WHITE; // Assuming you track ball color
+                float speed = ball.getSpeed(); // Assuming you track ball speed
+
+                // Add a new ball at the current ball's position
+                if(existingBalls.size()>30)
+                    return;
+                addOneBall(x, y, radius, color, speed);
+                // Set a random direction for the new ball
+                BouncingBall newBall = levelManager.getBalls().get(levelManager.getBalls().size() - 1);
+                float randomAngle = random.nextFloat() * 360; // Random angle in degrees
+                float directionX = (float) Math.cos(Math.toRadians(randomAngle));
+                float directionY = (float) Math.sin(Math.toRadians(randomAngle));
+
+                // Assuming the setDirection method takes a Vector
+                Vector randomDirection = new Vector(directionX, directionY);
+                newBall.setDirection(randomDirection);
+            }
+        }
+
 
         private void addOneBall(float x, float y, float radius, int color, float speed) {
             BouncingBall newBall = new BouncingBall(x, y, radius, color, speed, levelManager.getPaddle());
