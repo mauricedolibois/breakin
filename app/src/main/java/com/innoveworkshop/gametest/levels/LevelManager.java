@@ -85,6 +85,7 @@ public class LevelManager {
     }
 
     public void reloadLevel(GameSurface surface) {
+        surface.clearGameObjects();
         loadLevel(surface);
     }
 
