@@ -94,7 +94,11 @@ public class LevelManager {
         balls.add(newBall);
     }
 
+    public int getLevelCount() {
+        return levelLoader.getLevelCount();
+    }
+
     public int getCurrentLevel() {
-        return currentLevel;
+            return currentLevel+1 <= getLevelCount() ? currentLevel+1 : -10;
     }
 }

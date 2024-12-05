@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
         gameSurface = findViewById(R.id.gameSurface);
         levelText = findViewById(R.id.levelText); // Reference to the TextView
-
         try {
             InputStream levelFile = getResources().openRawResource(R.raw.levels); // Assuming levels.txt is placed in res/raw
             game = new Game(levelFile);
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
     class Game extends GameObject {
         private LevelManager levelManager;
-
         public Game(InputStream levelFile) throws Exception {
             levelManager = new LevelManager(levelFile);
         }
@@ -98,14 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
             for (GameObject powerup : powerups) {
                 DroppingPowerup droppingPowerup = (DroppingPowerup) powerup;
-                if (droppingPowerup.isCollected()) { // Assuming isCollected() checks if collected
-//                    addOneBall(
-//                            droppingPowerup.getPosition().x,
-//                            droppingPowerup.getPosition().y - 20,
-//                            20,
-//                            Color.WHITE,
-//                            levelManager.getBalls().get(0).getSpeed()
-//                    );
+                if (droppingPowerup.isCollected()) {
                     spawnBallsAtEachExistingBall();
                     gameSurface.removeGameObject(droppingPowerup);
                 }
@@ -127,17 +118,17 @@ public class MainActivity extends AppCompatActivity {
                 float speed = ball.getSpeed(); // Assuming you track ball speed
 
                 // Add a new ball at the current ball's position
-                if(existingBalls.size()>30)
-                    return;
+                if(gameSurface.getGameObjects().stream()
+                        .filter(gameObject -> gameObject instanceof BouncingBall)
+                        .count()>30){return;}
                 addOneBall(x, y, radius, color, speed);
                 // Set a random direction for the new ball
                 BouncingBall newBall = levelManager.getBalls().get(levelManager.getBalls().size() - 1);
                 float randomAngle = random.nextFloat() * 360; // Random angle in degrees
                 float directionX = (float) Math.cos(Math.toRadians(randomAngle));
-                float directionY = (float) Math.sin(Math.toRadians(randomAngle));
 
                 // Assuming the setDirection method takes a Vector
-                Vector randomDirection = new Vector(directionX, directionY);
+                Vector randomDirection = new Vector(directionX, ball.getDirection().y);
                 newBall.setDirection(randomDirection);
             }
         }
@@ -152,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void updateLevelText() {
-            runOnUiThread(() -> levelText.setText("Level " + (levelManager.getCurrentLevel() + 1))); // Update level text on UI thread
+        int currentLevel=levelManager.getCurrentLevel();
+        runOnUiThread(() -> levelText.setText(currentLevel> 0 ? "Level " + currentLevel  : "No more Levels")); // Update level text on UI thread
         }
     }
 }

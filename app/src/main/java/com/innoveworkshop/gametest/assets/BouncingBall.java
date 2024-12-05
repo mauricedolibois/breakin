@@ -42,6 +42,7 @@ public class BouncingBall extends Circle {
         }
         if (isFloored()) {
             destroyed = true;
+            destroy();
         }
     }
 
