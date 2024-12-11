@@ -7,7 +7,7 @@ DropChance=100
 
 # Level 2
 PaddleSize=500
-BallSpeed=40
+BallSpeed=25
 DropChance=50
 ////////////
 0-2-0-3-0
@@ -18,7 +18,7 @@ DropChance=50
 # Level 3
 PaddleSize=300
 BallSpeed=30
-DropChance=75
+DropChance=20
 ////////////
 1-1-1-1-1
 /
